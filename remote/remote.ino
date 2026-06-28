@@ -21,9 +21,14 @@ uint32_t current_key = 0;
 int pressed = 0;
 
 void setup(){
+  // turn off RX and TX LED pins  
+  pinMode(LED_BUILTIN_RX, INPUT);
+  pinMode(LED_BUILTIN_TX, INPUT);
+
+  // init media
   Consumer.begin(); 
   Keyboard.begin();
-  IrReceiver.begin(ir_pin, ENABLE_LED_FEEDBACK, 15);
+  IrReceiver.begin(ir_pin);
   Serial.begin(9600);
 }
 
@@ -61,12 +66,8 @@ void loop() {
       case right:
         Consumer.write(MEDIA_NEXT);
         break;
-    }
- 
-
+    }   
   }else{
-    
-
     if(pressed){
       Keyboard.releaseAll();
       pressed = 0;
