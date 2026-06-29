@@ -1,4 +1,4 @@
-top_left = [20,140]
+top_left = [20,20]
 height = 30
 spacing = 3
 
@@ -31,8 +31,8 @@ width_row4 = [52] + [height for i in range(11)] + [60]
 keys_row5 = ["shift", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "na", "^"]
 width_row5 = [57] + [height for i in range(10)] + [25, 30]
 
-keys_row6 = ["ctrl", "fn", "alt", "wdw", "___", "na", "<", " v ", ">"]
-width_row6 = [35 for i in range(4)] + [197] + [height for i in range(4)]
+keys_row6 = ["ctrl", "alt", "wdw", "___", "fn", "na", "<", " v ", ">"]
+width_row6 = [35 for i in range(3)] + [197,35] + [height for i in range(4)]
 
 rows = [[media_controls, media_width],
         [keys_row1, width_row1],

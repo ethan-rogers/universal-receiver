@@ -55,20 +55,12 @@ def keyboard_setup(widget):
 
 
 def recolor_icon(icon: QIcon, color: QColor) -> QIcon:
-    # 1. Extract a clear pixmap from the original standard icon
     original_pixmap = icon.pixmap(QSize(128, 128))
-    
-    # 2. Create a blank canvas of the same size with an alpha channel
     recolored_pixmap = QPixmap(original_pixmap.size())
     recolored_pixmap.fill(QColor("transparent"))
-    
-    # 3. Paint using composition modes
     painter = QPainter(recolored_pixmap)
-    
-    # Draw the original icon shape first
+
     painter.drawPixmap(0, 0, original_pixmap)
-    
-    # Switch composition: Only paint where pixels already exist (the icon's stencil)
     painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceIn)
     painter.fillRect(recolored_pixmap.rect(), color)
     
