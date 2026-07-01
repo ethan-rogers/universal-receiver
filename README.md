@@ -1,6 +1,6 @@
 # Universal Receiver
 
- Maps keyboard keys to any IR remote with an Arduino receiver. I made it to watch YT on my monitor in bed. 
+ Maps keyboard keys and media controls to any IR remote with an Arduino receiver. I made it to watch YT on my monitor in bed. 
 
  ## Hardware
 
