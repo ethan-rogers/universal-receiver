@@ -38,16 +38,13 @@ void loop() {
     IrReceiver.resume();
     if (data != 0) current_key = data;
     
-    
+    Serial.println(data, 16);
 
     if(!pressed){
       for (int i = 0; i < COUNT; i++){
         if (remote_keys[i] == current_key){
           Keyboard.press(keyboard_keys[i]);
           pressed = 1;
-          Serial.print("Pressed: ");
-          Serial.println(keyboard_keys[i]);
-
           break; 
         }
       }

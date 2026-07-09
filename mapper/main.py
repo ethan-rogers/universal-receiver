@@ -3,12 +3,16 @@ from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QStyle, QLabel, 
 from PyQt6.QtGui import  QIcon, QPixmap, QPainter, QColor
 from PyQt6.QtCore import pyqtSlot, Qt, QSize
 from PyQt6.QtGui import QFont
+from PyQt6.QtCore import QRunnable, QThreadPool, QTimer, pyqtSlot
+
 
 import keyboard as kb
-import receiver
+
+from receiver import Receiver
 
 
-arduino = None
+arduino = Receiver()
+threadpool = QThreadPool()
 
 def window():
     app = QApplication(sys.argv)
@@ -16,7 +20,6 @@ def window():
     widget.resize(800, 400)
     widget.setWindowTitle("Reciever Mapper")
 
-    receiver.init()
 
     keyboard_setup(widget)
     setup_connect(widget)
@@ -41,14 +44,17 @@ def setup_connect(widget):
 
 
 def try_connection(button, text):
-    arduino = receiver.init()
+    arduino.conenct()
 
-    if (arduino == None):
+    if (arduino.get_port() == None):
         text.setText("Connection Failed")
         button.setEnabled(True)
     else:
-        text.setText(f"Connected ({arduino.device})")
+        text.setText(f"Connected ({arduino.get_port()})")
         button.setEnabled(False)
+
+        threadpool.start(arduino)
+
 
 def keyboard_setup(widget):
     font = QFont("Arial", 7) 
@@ -116,6 +122,7 @@ def command(widget):
     table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
     table.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
 
+    arduino.set_table(table)
 
     button = QPushButton(widget)
     button.setGeometry(460, 280, 40, 30)
@@ -124,16 +131,25 @@ def command(widget):
 def mapping_table(widget):
     table = QTableWidget(8, 2, widget)
     table.move(520, 60)
-    table.resize(200, 250)
+    table.resize(220, 250)
 
-    table.setColumnWidth(0, 98)
-    table.setColumnWidth(1, 98)
+    table.setColumnWidth(0, 108)
+    table.setColumnWidth(1, 108)
     table.verticalHeader().setVisible(False)
     table.horizontalHeader().setVisible(False)
 
     table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
     table.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
 
+    for i in range(8):
+        button = QPushButton(widget)
+        button.setGeometry(750, 65 + i*30, 30, 30)
+        button.setText("-")
+
+    button = QPushButton(widget)
+    button.setText("Map")
+    button.setGeometry(520, 320, 80, 30)
+    #button.clicked.connect(lambda x : try_connection(button, text))
 
 
 if __name__ == '__main__':
