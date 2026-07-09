@@ -11,8 +11,9 @@ media_controls = ["SP_MediaPause",
                   "SP_MediaSkipBackward",
                   "SP_MediaSkipForward",
                   "SP_MediaStop",
-                  "SP_MediaVolume", 
-                  "SP_MediaVolumeMuted"]
+                  "mute.png", 
+                  "volume-down.png",
+                  "volume-up.png"]
 
 media_width = [height for i in range(len(media_controls))]
 
@@ -36,8 +37,8 @@ width_row6 = [35 for i in range(3)] + [197,35] + [height for i in range(4)]
 
 rows = [[media_controls, media_width],
         [keys_row1, width_row1],
-         [keys_row2, width_row2], 
-         [keys_row3, width_row3],
-         [keys_row4, width_row4],
-         [keys_row5, width_row5],
-         [keys_row6, width_row6]]
+        [keys_row2, width_row2], 
+        [keys_row3, width_row3],
+        [keys_row4, width_row4],
+        [keys_row5, width_row5],
+        [keys_row6, width_row6]]

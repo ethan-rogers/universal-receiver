@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QStyle, QLabel, QTableWidget, QAbstractItemView
 from PyQt6.QtGui import  QIcon, QPixmap, QPainter, QColor
 from PyQt6.QtCore import pyqtSlot, Qt, QSize
@@ -9,9 +10,11 @@ from PyQt6.QtCore import QRunnable, QThreadPool, QTimer, pyqtSlot
 import keyboard as kb
 
 from receiver import Receiver
+from mappings import Mapping
 
+mapper = Mapping()
+arduino = Receiver(mapper)
 
-arduino = Receiver()
 threadpool = QThreadPool()
 
 def window():
@@ -72,14 +75,20 @@ def keyboard_setup(widget):
                 button = QPushButton(widget)
                 # row one is media buttons with icons
                 if in_media:
-                    pixmapi = getattr(QStyle.StandardPixmap, k)
-                    icon = widget.style().standardIcon(pixmapi)
-                    recolored_icon = recolor_icon(icon, QColor("white"))
-                    button.setIcon(recolored_icon)
+                    if "png" not in k:
+                        pixmapi = getattr(QStyle.StandardPixmap, k)
+                        icon = widget.style().standardIcon(pixmapi)
+                        recolored_icon = recolor_icon(icon, QColor("white"))
+                        button.setIcon(recolored_icon)
+                    else:
+                        icon_path = f"icons/{k}"
+                        icon = QIcon(icon_path)
+                        recolored_icon = recolor_icon(icon, QColor("white"))
+                        button.setIcon(recolored_icon)
                 else:
                     button.setFont(font)
                     button.setText(k)
-                button.clicked.connect(lambda checked, k=k : button_clicked(k))
+                button.clicked.connect(lambda checked, k=k : mapper.add_key(k))
 
                 button.setGeometry(x_pos, y_pos, width[i], kb.height)
 
@@ -106,9 +115,6 @@ def recolor_icon(icon: QIcon, color: QColor) -> QIcon:
     painter.end()
     
     return QIcon(recolored_pixmap)
-
-def button_clicked(key):
-    print(key, "clicked")
 
 def command(widget):
     table = QTableWidget(1, 2, widget)

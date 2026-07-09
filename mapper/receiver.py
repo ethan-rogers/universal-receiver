@@ -6,15 +6,17 @@ import time
 from PyQt6.QtCore import QRunnable, QThreadPool, QTimer, pyqtSlot
 from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem
 
+
 BAUD_RATE = 9600
 
 
 class Receiver(QRunnable):
-    def __init__(self):
+    def __init__(self, mapper):
         super().__init__()
         self.conenct()
         self.data = None
         self.table = None
+        self.mapper = mapper
     
     def set_table(self, table):
         self.table = table
@@ -36,10 +38,6 @@ class Receiver(QRunnable):
                 self.port = p.device
                 self.ser = serial.Serial(self.port, BAUD_RATE, timeout=1)
                 
-                
-
-
-
     @pyqtSlot()
     def run(self):
         while True:
@@ -63,8 +61,12 @@ class Receiver(QRunnable):
                             new_item = QTableWidgetItem(clean_data)
                             self.table.setItem(0, 0, new_item)
 
-
+                    if self.mapper != None:
+                        self.mapper.add_code(clean_data)
 
     def get_port(self):
         return self.port
+    
+    def get_data(self):
+        return self.data
     
