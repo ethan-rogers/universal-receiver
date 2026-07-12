@@ -20,3 +20,18 @@ TODO: add schematic
 Here is my prototype that I use. Made with a perfboard. 
 
 ![](images/prototype.jpg)
+
+## Software
+
+### Functionality
+
+The software allows you to map any IR signal to a combination of keys and media controls. It automatically connects to the Arduino and supports up to 8 combinations.
+
+### UI
+
+
+![](images/ui.png)
+
+### Setup
+
+To run the software you must have Python installed and the packages `pyqt6` and `pyserial`.
