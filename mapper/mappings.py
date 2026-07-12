@@ -27,6 +27,8 @@ class Mapping:
         self.keys = []
         self.command = None
         self.table = None
+
+        self.mapping_size = 8
     
     def set_command(self, command):
         self.command = command
@@ -41,28 +43,58 @@ class Mapping:
         self.update_keys()
         self.update_code()
 
+    def incomplete(self):
+        return len(self.keys) == 0 or self.code == None
 
-    def get_keys(self):
+    def keys_to_string(self, keys):
         key_str = "" 
 
-        for i, k in enumerate(self.keys):
+        for i, k in enumerate(keys):
             if k in replacements:
                 key_str += replacements[k]
             else:
                 key_str += k
-            if i != len(self.keys) - 1:
+            if i != len(keys) - 1:
                 key_str += " + "
 
         return key_str
     
+    def get_keys(self):
+        return self.keys_to_string(self.keys)
+    
     def update_table(self):
-        pass
+        print(self.mapping)
+        for i, m in enumerate(self.mapping):
+            code, keys = m
+            keys = self.keys_to_string(keys)
 
+            cell_item = self.table.item(i, 1)
+            if cell_item is not None:
+                cell_item.setText(keys)
+            else:
+                new_item = QTableWidgetItem(keys)
+                self.table.setItem(i, 1, new_item)
+
+            cell_item = self.table.item(i, 0)
+            if cell_item is not None:
+                cell_item.setText(code)
+            else:
+                new_item = QTableWidgetItem(code)
+                self.table.setItem(i, 0, new_item)
+        
+        mapping_count = len(self.mapping)
+        for i in range(self.mapping_size - mapping_count):
+            for j in range(2):
+                cell_item = self.table.item(i + mapping_count, j)
+                if cell_item is not None:
+                    cell_item.setText("")
+                else:
+                    new_item = QTableWidgetItem("")
+                    self.command.setItem(i + mapping_count, j, new_item)
+            
     def update_keys(self):
         if self.command != None:
-            print("attempting add")
             cell_item = self.command.item(0, 1)
-            print("Recieved item: ", cell_item)
             if cell_item is not None:
                 cell_item.setText(self.get_keys())
             else:
@@ -95,8 +127,25 @@ class Mapping:
         self.update_code()
 
     def add_mapping(self):
-        self.mapping.append([self.code, self.keys])
-        self.clear
+        if not self.incomplete():
+            
+            for m in self.mapping:
+                if m[0] == self.code:
+                    m[1] = self.keys
+                    self.clear()
+                    self.update_table()
+                    return
+
+            self.mapping.append([self.code, self.keys])
+            self.clear()
+            self.update_table()
+    
+    def remove_mapping(self, index):
+        if index < len(self.mapping):
+            print("popping")
+            self.mapping.pop(index)
+            print("updated")
+            self.update_table()
 
     def map_to_arduino(self):
         print("Attempting Mapping")

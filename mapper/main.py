@@ -132,6 +132,7 @@ def command(widget):
     add_button = QPushButton(widget)
     add_button.setGeometry(23, 320, 40, 30)
     add_button.setText("Add")
+    add_button.clicked.connect(mapper.add_mapping)
 
     remove_key_button = QPushButton(widget)
     remove_key_button.setGeometry(73, 320, 40, 30)
@@ -164,11 +165,12 @@ def mapping_table(widget):
         button = QPushButton(widget)
         button.setGeometry(750, 65 + i*30, 30, 30)
         button.setText("-")
+        button.clicked.connect(lambda x, index = i : mapper.remove_mapping(index))
 
     button = QPushButton(widget)
     button.setText("Map")
     button.setGeometry(520, 320, 80, 30)
-    #button.clicked.connect(lambda x : try_connection(button, text))
+    button.clicked.connect(lambda x : mapper.map_to_arduino)
 
 
 if __name__ == '__main__':
