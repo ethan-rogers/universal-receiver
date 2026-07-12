@@ -1,5 +1,4 @@
 import sys
-from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QStyle, QLabel, QTableWidget, QAbstractItemView
 from PyQt6.QtGui import  QIcon, QPixmap, QPainter, QColor
 from PyQt6.QtCore import pyqtSlot, Qt, QSize
@@ -119,20 +118,32 @@ def recolor_icon(icon: QIcon, color: QColor) -> QIcon:
 def command(widget):
     table = QTableWidget(1, 2, widget)
     table.move(23, 280)
-    table.resize(405, 30)
+    table.resize(480, 30)
 
-    table.setColumnWidth(0, 200)
-    table.setColumnWidth(1, 200)
+    table.setColumnWidth(0, 238)
+    table.setColumnWidth(1, 238)
     table.verticalHeader().setVisible(False)
     table.horizontalHeader().setVisible(False)
     table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
     table.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
 
-    arduino.set_table(table)
+    mapper.set_command(table)
 
-    button = QPushButton(widget)
-    button.setGeometry(460, 280, 40, 30)
-    button.setText("Add")
+    add_button = QPushButton(widget)
+    add_button.setGeometry(23, 320, 40, 30)
+    add_button.setText("Add")
+
+    remove_key_button = QPushButton(widget)
+    remove_key_button.setGeometry(73, 320, 40, 30)
+    remove_key_button.setText("-")
+    remove_key_button.clicked.connect(mapper.remove_key)
+
+
+    clear_button = QPushButton(widget)
+    clear_button.setGeometry(123, 320, 60, 30)
+    clear_button.setText("Clear")
+    clear_button.clicked.connect(mapper.clear)
+
 
 def mapping_table(widget):
     table = QTableWidget(8, 2, widget)
@@ -146,6 +157,8 @@ def mapping_table(widget):
 
     table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
     table.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
+
+    mapper.set_table(table)
 
     for i in range(8):
         button = QPushButton(widget)
