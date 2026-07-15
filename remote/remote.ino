@@ -1,31 +1,32 @@
 #include <IRremote.hpp>
-//#include "Keyboard.h"
 
-#include <HID-Project.h>                    //include HID_Project library
+#include <HID-Project.h>                  
 #include <HID-Settings.h>
 #define ir_pin 4
 
-const uint32_t up = 0xE718FF00;
-const uint32_t down = 0xAD52FF00;
-const uint32_t left = 0xF708FF00;
-const uint32_t right = 0xA55AFF00;
 
-// center
-uint32_t remote_keys[] = {0xE31CFF00};
-uint32_t keyboard_keys[] = {32};
-const int COUNT = 1;
+uint32_t remote_keyboard[] = {0xF708FF00, 0xA55AFF00};
+KeyboardKeycode   keyboard_keys[] = {KEY_LEFT_ARROW, KEY_RIGHT_ARROW};
 
+uint32_t remote_keyboard_typed[] = {0xE31CFF00};
+char keyboard_keys_typed[] = {' '};
+
+uint32_t remote_media[] = {0xE718FF00, 0xAD52FF00};
+ConsumerKeycode media_keys[] = {MEDIA_VOLUME_UP, MEDIA_VOLUME_DOWN};
 
 uint32_t current_key = 0;
 
 int pressed = 0;
 
+#define KEYBOARD_COUNT (sizeof(remote_keyboard) / sizeof(remote_keyboard[0]))
+#define KEYBOARD_TYPED_COUNT (sizeof(remote_keyboard_typed) / sizeof(remote_keyboard_typed[0]))
+#define MEDIA_COUNT    (sizeof(remote_media)    / sizeof(remote_media[0]))
+
 void setup(){
-  // turn off RX and TX LED pins  
   pinMode(LED_BUILTIN_RX, INPUT);
   pinMode(LED_BUILTIN_TX, INPUT);
 
-  // init media
+
   Consumer.begin(); 
   Keyboard.begin();
   IrReceiver.begin(ir_pin);
@@ -41,29 +42,30 @@ void loop() {
     Serial.println(data, 16);
 
     if(!pressed){
-      for (int i = 0; i < COUNT; i++){
-        if (remote_keys[i] == current_key){
+      for (int i = 0; i < KEYBOARD_COUNT; i++){
+        if (remote_keyboard[i] == current_key){
           Keyboard.press(keyboard_keys[i]);
-          pressed = 1;
+          pressed = 1; 
           break; 
         }
       }
-    }
 
-    switch (current_key){
-      case up:
-        Consumer.write(MEDIA_VOLUME_UP);
-        break;
-      case down:
-        Consumer.write(MEDIA_VOLUME_DOWN);
-        break;
-      case left:
-        Consumer.write(MEDIA_PREVIOUS); 
-        break;
-      case right:
-        Consumer.write(MEDIA_NEXT);
-        break;
-    }   
+      for (int i = 0; i < KEYBOARD_TYPED_COUNT; i++){
+        if (remote_keyboard_typed[i] == current_key){
+          Keyboard.press(keyboard_keys_typed[i]);
+          pressed = 1; 
+          break; 
+        }
+      }
+
+
+      for (int i = 0; i < MEDIA_COUNT; i++){
+        if (remote_media[i] == current_key) {
+          Consumer.write(media_keys[i]);
+          break;
+        }
+      }
+    }
   }else{
     if(pressed){
       Keyboard.releaseAll();

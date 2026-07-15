@@ -29,6 +29,7 @@ The software allows you to map any IR signal to a combination of keys and media 
 
 ### UI
 
+If you have the device plugged into your computer it should automatically connect. Press keys on the on screen keyboard and then push a button on an IR remote. If you want to add this mapping to your device press `Add`. If the remote hex code is already in the mappings, it will replace the old entry. Once you have all the mappings you need, press `Map` to upload them to the device. 
 
 ![](images/ui.png)
 
