@@ -4,8 +4,8 @@ spacing = 3
 
 media_buffer = 10
 
-media_controls = ["SP_MediaPause", 
-                  "SP_MediaPlay", 
+media_controls = ["SP_MediaPlay", 
+                  "SP_MediaPause", 
                   "SP_MediaSeekBackward",
                   "SP_MediaSeekForward",
                   "SP_MediaSkipBackward",
@@ -13,7 +13,9 @@ media_controls = ["SP_MediaPause",
                   "SP_MediaStop",
                   "mute.png", 
                   "volume-down.png",
-                  "volume-up.png"]
+                  "volume-up.png", 
+                  "brightness-down.png",
+                  "brightness-up.png"]
 
 media_width = [height for i in range(len(media_controls))]
 

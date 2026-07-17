@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem
+from uploader import reconfig, upload
 
 replacements = {
 
@@ -50,10 +51,9 @@ class Mapping:
         key_str = "" 
 
         for i, k in enumerate(keys):
-            if k in replacements:
-                key_str += replacements[k]
-            else:
-                key_str += k
+
+            key_str += k
+
             if i != len(keys) - 1:
                 key_str += " + "
 
@@ -113,6 +113,11 @@ class Mapping:
                 self.command.setItem(0, 0, new_item)
 
     def add_key(self, key):
+
+
+
+        if key in replacements:
+            key = replacements[key]
         if key not in self.keys:
             self.keys.append(key)
             self.update_keys()
@@ -148,4 +153,5 @@ class Mapping:
             self.update_table()
 
     def map_to_arduino(self):
-        print("Attempting Mapping")
+        print("mapped")
+        reconfig(self.mapping)

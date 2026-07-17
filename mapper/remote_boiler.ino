@@ -5,14 +5,14 @@
 #define ir_pin 4
 
 
-uint32_t remote_keyboard[] = {};
-KeyboardKeycode   keyboard_keys[] = {};
+uint32_t remote_keyboard[] = replace_remote_keyboard;
+KeyboardKeycode   keyboard_keys[] = replace_keyboard_keys;
 
-uint32_t remote_keyboard_typed[] = {0xE718FF00, 0xE718FF00, 0xBA45FF00};
-char keyboard_keys_typed[] = {v, c, ' '};
+uint32_t remote_keyboard_typed[] = replace_remote_typed;
+char keyboard_keys_typed[] = replace_keyboard_typed;
 
-uint32_t remote_media[] = {0xBA45FF00};
-ConsumerKeycode media_keys[] = {MEDIA_PREVIOUS};
+uint32_t remote_media[] = replace_remote_media;
+ConsumerKeycode media_keys[] = replace_media_keys;
 
 uint32_t current_key = 0;
 

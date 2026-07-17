@@ -170,7 +170,7 @@ def mapping_table(widget):
     button = QPushButton(widget)
     button.setText("Map")
     button.setGeometry(520, 320, 80, 30)
-    button.clicked.connect(lambda x : mapper.map_to_arduino)
+    button.clicked.connect(lambda x : mapper.map_to_arduino())
 
 
 if __name__ == '__main__':
