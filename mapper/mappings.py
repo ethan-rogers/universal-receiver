@@ -13,8 +13,8 @@ replacements = {
     "SP_MediaSkipForward" : "skip ->",
     "SP_MediaStop" : "stop",
     "mute.png" : "mute", 
-    "volume-down.png" : "vol +",
-    "volume-up.png" : "vol -",
+    "volume-down.png" : "vol -",
+    "volume-up.png" : "vol +",
     "<-" :"backspace",
     "___" : "space",
     "^" : "up",
@@ -24,16 +24,18 @@ replacements = {
 }
 
 class Mapping:
-    def __init__(self):
+    def __init__(self, threadpool):
         self.mapping = []
         self.code = None
         self.keys = []
         self.command = None
         self.table = None
         self.arduino = None
-        self.threadpool = None
+        self.threadpool = threadpool
         self.upload = Upload()
         self.mapping_size = 8
+
+
     
     def set_command(self, command):
         self.command = command
@@ -47,6 +49,17 @@ class Mapping:
 
     def set_thread(self, threadpool):
         self.threadpool = threadpool
+
+    def set_console(self, console):
+        self.console = console
+        self.upload.set_console(console)
+
+    def set_mapping_button(self, mapping_button):
+        self.mapping_button = mapping_button
+        self.upload.set_mapping_button(mapping_button)
+
+
+
 
     def clear(self):
         self.keys = []
@@ -164,13 +177,12 @@ class Mapping:
     def map_to_arduino(self):
         if self.arduino == None or self.threadpool == None:
             return
-
-        print("Configuring")
+        
+        self.mapping_button.setEnabled(False)
+        self.console.setText("Compiling")
 
         self.upload.reconfig(self.mapping)
-
-        print("Closing")
-        self.arduino.close(self.threadpool.start(self.upload))
+        self.arduino.close(lambda : self.threadpool.start(self.upload))
 
 
 

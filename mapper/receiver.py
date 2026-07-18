@@ -22,7 +22,6 @@ class Receiver(QRunnable):
         self.setAutoDelete(False)
 
         self.on_close = None
-
         #self.connect()
 
 
@@ -68,7 +67,7 @@ class Receiver(QRunnable):
         print("Closing")
         print(self.ser)
         self.ser.close()
-        
+        print("Closed")
         if (self.on_close != None):
             self.on_close()
 

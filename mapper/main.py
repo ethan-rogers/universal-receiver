@@ -13,11 +13,12 @@ from mappings import Mapping
 
 threadpool = QThreadPool()
 
-mapper = Mapping()
+mapper = Mapping(threadpool)
 arduino = Receiver(mapper, threadpool)
 
 mapper.set_arduino(arduino)
-mapper.set_thread(threadpool)
+
+
 
 
 def window():
@@ -173,10 +174,19 @@ def mapping_table(widget):
         button.setText("-")
         button.clicked.connect(lambda x, index = i : mapper.remove_mapping(index))
 
-    button = QPushButton(widget)
-    button.setText("Map")
-    button.setGeometry(520, 320, 80, 30)
-    button.clicked.connect(lambda x : mapper.map_to_arduino())
+    mapping_button = QPushButton(widget)
+    mapping_button.setText("Map")
+    mapping_button.setGeometry(520, 320, 80, 30)
+    mapping_button.clicked.connect(lambda x : mapper.map_to_arduino())
+
+    mapper.set_mapping_button(mapping_button)
+
+    console = QLabel(widget)
+    console.setText("")
+    console.setGeometry(625, 320, 150, 30)
+    console.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+
+    mapper.set_console(console)
 
 
 if __name__ == '__main__':

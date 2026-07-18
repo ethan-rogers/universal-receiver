@@ -56,6 +56,10 @@ typed_keycodes = {
 }
 
 class Upload(QRunnable):
+    def __init__(self):
+        super().__init__()
+
+        self.setAutoDelete(False)
 
     def reconfig(self, mapping):
         replace_keyboard_keys = "{"
@@ -122,13 +126,18 @@ class Upload(QRunnable):
         with open("remote/remote.ino", "w") as file:
             file.write(code)
 
-
+    def set_console(self, console):
+        self.console = console
 
     def set_arduino(self, arduino):
         self.arduino = arduino
     
+    def set_mapping_button(self, mapping_button):
+        self.mapping_button = mapping_button
+    
     @pyqtSlot()
     def run(self):
+                
         print("Uploading")
         remote_path = Path("remote").resolve()
 
@@ -142,8 +151,11 @@ class Upload(QRunnable):
         subprocess.run(compile_command)
 
         print("running upload")
-
+        self.console.setText("Uploading")
         subprocess.run(upload_command)
         time.sleep(1)
         self.arduino.connect()
+
+        self.mapping_button.setEnabled(True)
+        self.console.setText("")
 
