@@ -13,16 +13,14 @@ media_controls = ["SP_MediaPlay",
                   "SP_MediaStop",
                   "mute.png", 
                   "volume-down.png",
-                  "volume-up.png", 
-                  "brightness-down.png",
-                  "brightness-up.png"]
+                  "volume-up.png"]
 
 media_width = [height for i in range(len(media_controls))]
 
 keys_row1 = ["esc", "na"]  + [f"F{i}" for i in range(1,13)] + ["del"]
 width_row1 = [height, 15] + [height for i in range(13)]
 
-keys_row2 = ['`'] + [str(i) for i in range(1, 10)] + ["0", "-", "+", "<-"]
+keys_row2 = ['`'] + [str(i) for i in range(1, 10)] + ["0", "-", "=", "<-"]
 width_row2 =  [height for i in range(13)] + [47]
 
 keys_row3 = ["tab", "q","w","e","r","t","y","u","i","o","p", "[", "]", "\\"]

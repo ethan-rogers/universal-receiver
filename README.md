@@ -33,6 +33,8 @@ If you have the device plugged into your computer it should automatically connec
 
 ![](images/ui.png)
 
+NOTE: If you want to clear the device simply press Map when there are no mappings set. This will remove all previous settings.
+
 ### Setup
 
-To run the software you must have Python installed and the packages `pyqt6` and `pyserial`.
+To run the software you must have Python installed and the packages `pyqt6` and `pyserial`. Also install the [Arduino CLI](https://docs.arduino.cc/arduino-cli/).

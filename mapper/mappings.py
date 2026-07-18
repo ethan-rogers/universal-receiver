@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem
-from uploader import reconfig, upload
+from uploader import Upload
+
+import time
 
 replacements = {
 
@@ -28,14 +30,23 @@ class Mapping:
         self.keys = []
         self.command = None
         self.table = None
-
+        self.arduino = None
+        self.threadpool = None
+        self.upload = Upload()
         self.mapping_size = 8
     
     def set_command(self, command):
         self.command = command
     
+    def set_arduino(self, arduino):
+        self.arduino = arduino
+        self.upload.set_arduino(arduino)
+    
     def set_table(self, table):
         self.table = table
+
+    def set_thread(self, threadpool):
+        self.threadpool = threadpool
 
     def clear(self):
         self.keys = []
@@ -147,11 +158,22 @@ class Mapping:
     
     def remove_mapping(self, index):
         if index < len(self.mapping):
-            print("popping")
             self.mapping.pop(index)
-            print("updated")
             self.update_table()
 
     def map_to_arduino(self):
-        print("mapped")
-        reconfig(self.mapping)
+        if self.arduino == None or self.threadpool == None:
+            return
+
+        print("Configuring")
+
+        self.upload.reconfig(self.mapping)
+
+        print("Closing")
+        self.arduino.close(self.threadpool.start(self.upload))
+
+
+
+
+
+    

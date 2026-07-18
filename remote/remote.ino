@@ -8,11 +8,11 @@
 uint32_t remote_keyboard[] = {};
 KeyboardKeycode   keyboard_keys[] = {};
 
-uint32_t remote_keyboard_typed[] = {0xE718FF00, 0xE718FF00, 0xBA45FF00};
-char keyboard_keys_typed[] = {v, c, ' '};
+uint32_t remote_keyboard_typed[] = {};
+char keyboard_keys_typed[] = {};
 
-uint32_t remote_media[] = {0xBA45FF00};
-ConsumerKeycode media_keys[] = {MEDIA_PREVIOUS};
+uint32_t remote_media[] = {};
+ConsumerKeycode media_keys[] = {};
 
 uint32_t current_key = 0;
 

@@ -1,3 +1,9 @@
+import subprocess
+from pathlib import Path
+
+from PyQt6.QtCore import QRunnable, QThreadPool, QTimer, pyqtSlot
+
+import time
 
 media_codes = {
 
@@ -49,92 +55,95 @@ typed_keycodes = {
 
 }
 
-# Note: The difference is in the Arduino library some keys have to be stored as Keycode type while others have to be types.
+class Upload(QRunnable):
 
-keyboard_codes = {}
+    def reconfig(self, mapping):
+        replace_keyboard_keys = "{"
+        replace_keyboard_keys_typed  = "{"
+        replace_media_keys = "{"
 
-keyboard_keys = {}
+        replace_remote_keyboard = "{"
+        replace_remote_keyboard_typed  = "{"
+        replace_remote_media = "{"
 
-def reconfig(mapping):
-    print("Attempting")
-    replace_keyboard_keys = "{"
-    replace_keyboard_keys_typed  = "{"
-    replace_media_keys = "{"
+        for m in mapping:
+            code, keys = m
+            for key in keys:
+                if key in media_codes:
+                    replace_media_keys += media_codes[key] + ", "
+                    replace_remote_media += "0x" + code + ", "
+                elif key in keyboard_keycodes:
+                    replace_keyboard_keys += keyboard_keycodes[key] + ", "
+                    replace_remote_keyboard += "0x" + code + ", "
+                elif key in typed_keycodes:
+                    replace_keyboard_keys_typed += typed_keycodes[key] + ", "
+                    replace_remote_keyboard_typed += "0x" + code + ", "
+                else:
+                    replace_keyboard_keys_typed += "'" +  key + "', "
+                    replace_remote_keyboard_typed += "0x" + code + ", "
 
-    replace_remote_keyboard = "{"
-    replace_remote_keyboard_typed  = "{"
-    replace_remote_media = "{"
+        if replace_keyboard_keys != '{':
+            replace_keyboard_keys = replace_keyboard_keys[:-2]
 
-    for m in mapping:
-        code, keys = m
-        print(code,keys)
-        for key in keys:
-            if key in media_codes:
-                replace_media_keys += media_codes[key] + ", "
-                replace_remote_media += "0x" + code + ", "
-            elif key in keyboard_keycodes:
-                replace_keyboard_keys += keyboard_keycodes[key] + ", "
-                replace_remote_keyboard += "0x" + code + ", "
-            elif key in typed_keycodes:
-                replace_keyboard_keys_typed += typed_keycodes[key] + ", "
-                replace_remote_keyboard_typed += "0x" + code + ", "
-            else:
-                replace_keyboard_keys_typed += key + ", "
-                replace_remote_keyboard_typed += "0x" + code + ", "
+        if replace_keyboard_keys_typed != '{':
+            replace_keyboard_keys_typed = replace_keyboard_keys_typed[:-2]
 
-    if replace_keyboard_keys != '{':
-        replace_keyboard_keys = replace_keyboard_keys[:-2]
+        if replace_media_keys != '{':
+            replace_media_keys = replace_media_keys[:-2]
 
-    if replace_keyboard_keys_typed != '{':
-        replace_keyboard_keys_typed = replace_keyboard_keys_typed[:-2]
+        replace_keyboard_keys += '}'
+        replace_keyboard_keys_typed += '}'
+        replace_media_keys += '}'
 
-    if replace_media_keys != '{':
-        replace_media_keys = replace_media_keys[:-2]
+        if replace_remote_keyboard != '{':
+            replace_remote_keyboard = replace_remote_keyboard[:-2]
 
-    replace_keyboard_keys += '}'
-    replace_keyboard_keys_typed += '}'
-    replace_media_keys += '}'
+        if replace_remote_keyboard_typed != '{':
+            replace_remote_keyboard_typed = replace_remote_keyboard_typed[:-2]
 
-    if replace_remote_keyboard != '{':
-        replace_remote_keyboard = replace_remote_keyboard[:-2]
+        if replace_remote_media != '{':
+            replace_remote_media = replace_remote_media[:-2]
 
-    if replace_remote_keyboard_typed != '{':
-        replace_remote_keyboard_typed = replace_remote_keyboard_typed[:-2]
+        replace_remote_keyboard += '}'
+        replace_remote_keyboard_typed += '}'
+        replace_remote_media += '}'
+        code = ""
 
-    if replace_remote_media != '{':
-        replace_remote_media = replace_remote_media[:-2]
+        with open("mapper/remote_boiler.ino", "r") as file:
+            code = file.read()
+            code = code.replace("replace_remote_keyboard", replace_remote_keyboard)
+            code = code.replace("replace_remote_typed", replace_remote_keyboard_typed)
+            code = code.replace("replace_remote_media", replace_remote_media)
 
-    replace_remote_keyboard += '}'
-    replace_remote_keyboard_typed += '}'
-    replace_remote_media += '}'
-    code = ""
-
-    print("Opening Files")
-
-    with open("mapper/remote_boiler.ino", "r") as file:
-        print("Boiler Opened")
-        code = file.read()
-        code = code.replace("replace_remote_keyboard", replace_remote_keyboard)
-        code = code.replace("replace_remote_typed", replace_remote_keyboard_typed)
-        code = code.replace("replace_remote_media", replace_remote_media)
-
-        code = code.replace("replace_keyboard_keys", replace_keyboard_keys)
-        code = code.replace("replace_keyboard_typed", replace_keyboard_keys_typed)
-        code = code.replace("replace_media_keys", replace_media_keys)
-    
-    with open("remote/remote.ino", "w") as file:
-        print("Reak Opened")
-        file.write(code)
+            code = code.replace("replace_keyboard_keys", replace_keyboard_keys)
+            code = code.replace("replace_keyboard_typed", replace_keyboard_keys_typed)
+            code = code.replace("replace_media_keys", replace_media_keys)
         
+        with open("remote/remote.ino", "w") as file:
+            file.write(code)
 
 
 
+    def set_arduino(self, arduino):
+        self.arduino = arduino
+    
+    @pyqtSlot()
+    def run(self):
+        print("Uploading")
+        remote_path = Path("remote").resolve()
 
+        print(remote_path)
 
+        compile_command = f"arduino-cli compile --fqbn arduino:avr:micro {remote_path}"
+        upload_command = f"arduino-cli upload -p {self.arduino.get_port()} --fqbn arduino:avr:micro {remote_path}"
 
+        print(upload_command)
+        print("Running compile")
+        subprocess.run(compile_command)
 
+        print("running upload")
 
+        subprocess.run(upload_command)
+        time.sleep(1)
+        self.arduino.connect()
 
-
-def upload():
-    pass

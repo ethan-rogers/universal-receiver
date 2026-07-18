@@ -11,13 +11,18 @@ import keyboard as kb
 from receiver import Receiver
 from mappings import Mapping
 
-mapper = Mapping()
-arduino = Receiver(mapper)
-
 threadpool = QThreadPool()
+
+mapper = Mapping()
+arduino = Receiver(mapper, threadpool)
+
+mapper.set_arduino(arduino)
+mapper.set_thread(threadpool)
+
 
 def window():
     app = QApplication(sys.argv)
+    app.aboutToQuit.connect(arduino.close)
     widget = QWidget()
     widget.resize(800, 400)
     widget.setWindowTitle("Reciever Mapper")
@@ -29,6 +34,7 @@ def window():
     mapping_table(widget)
 
     widget.show()
+
     sys.exit(app.exec())
 
 def setup_connect(widget):
@@ -46,7 +52,7 @@ def setup_connect(widget):
 
 
 def try_connection(button, text):
-    arduino.conenct()
+    arduino.connect()
 
     if (arduino.get_port() == None):
         text.setText("Connection Failed")
@@ -55,7 +61,7 @@ def try_connection(button, text):
         text.setText(f"Connected ({arduino.get_port()})")
         button.setEnabled(False)
 
-        threadpool.start(arduino)
+        
 
 
 def keyboard_setup(widget):
