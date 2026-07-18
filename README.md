@@ -13,7 +13,7 @@ The Arduino acts as a USB keyboard, so once the keys are mapped it will work plu
 
 ### Schematic
 
-TODO: add schematic
+![](images/schematic.png)
 
 ### Physical Prototype
 
