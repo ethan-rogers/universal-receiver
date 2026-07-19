@@ -33,7 +33,7 @@ If you have the device plugged into your computer it should automatically connec
 
 ![](images/ui.png)
 
-NOTE: If you want to clear the device simply press Map when there are no mappings set. This will remove all previous settings.
+NOTE: If you want to clear the device simply press Map when there are no mappings set. This will remove all previous settings. Also if the Arduino Micro has never been mapped before, pressing Map will upload the code so the device can read the IR input. 
 
 ### Setup
 
