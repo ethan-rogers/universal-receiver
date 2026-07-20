@@ -46,7 +46,6 @@ void loop() {
         if (remote_keyboard[i] == current_key){
           Keyboard.press(keyboard_keys[i]);
           pressed = 1; 
-          break; 
         }
       }
 
@@ -54,7 +53,6 @@ void loop() {
         if (remote_keyboard_typed[i] == current_key){
           Keyboard.press(keyboard_keys_typed[i]);
           pressed = 1; 
-          break; 
         }
       }
 
@@ -62,7 +60,6 @@ void loop() {
       for (int i = 0; i < MEDIA_COUNT; i++){
         if (remote_media[i] == current_key) {
           Consumer.write(media_keys[i]);
-          break;
         }
       }
     }
